@@ -2,15 +2,18 @@
 A program that implements a basic feedforward multilayer Artificial Neural Network
 
 Written By Carl Bettosi and Mamta Sofat
-16/11/202
+16/11/2020
 
 """
 
 import numpy as np
 import random
+import particle
 
-# create ANN architecture
-numberOfInputs = 2 #HARDCODED - CHANGE
+
+#--- GENERATE ANN ----------------------------------------------------------------------  
+
+numberOfInputs = 2
 
 # get some properties from user
 numberOfNeurons = int(input("How many neurons? "))
@@ -22,18 +25,10 @@ if(numberOfNeurons >= (2*numberOfInputs) or numberOfNeurons < 1):
 
 numberOfLayers = int(input("How many hidden layers? "))
 
-print(numberOfNeurons)
-print(numberOfLayers)
+print(f"\nGenerating ANN with {numberOfLayers} layers and {numberOfNeurons} neurons...\n")
 
-# add bias
-
-
-# assign random weights to hidden and output layer
-
-# generate randomly assigned weights (edges)
+# dictionary to hold layers
 HiddenLayers = {};
-
-print("----------------------------------------")
 
 # create weights for input > first hidden layer
 arr = np.random.random((numberOfInputs, numberOfNeurons))
@@ -46,9 +41,7 @@ for x in range(numberOfLayers-1):
     HiddenLayers[x] = arr
     print(arr)
     
-    
-# define activation functions
-
+#--- ACTIVATION FUNCTIONS --------------------------------------------------------------    
 
 #reference this https://medium.com/towards-artificial-intelligence/building-neural-networks-with-python-code-and-math-in-detail-ii-bbe8accbf3d1
 def sigmoid(x):
@@ -63,8 +56,12 @@ def cosine(x):
 #def Gaussian(x):
     #return exp    
 
-# run training code (do this last - PSO)
+#--- PARTICLE SWARM OPTIMIZATION -------------------------------------------------------
 
+numberOfParticles = int(input("How many particles? "))
 
+particleArray = np.array()
 
-# Find error in predication
+for x in numberOfParticles:
+    newParticle = particle(x)
+    np.append(particleArray, newParticle)
