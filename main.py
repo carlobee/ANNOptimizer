@@ -8,7 +8,8 @@ Written By Carl Bettosi and Mamta Sofat
 
 import numpy as np
 import random
-import particle
+
+from PSO import PSO
 
 
 #--- GENERATE ANN ----------------------------------------------------------------------  
@@ -58,10 +59,17 @@ def cosine(x):
 
 #--- PARTICLE SWARM OPTIMIZATION -------------------------------------------------------
 
-numberOfParticles = int(input("How many particles? "))
+# function we are attempting to optimize (minimize)
+def func(x):
+    total=0
+    for i in range(len(x)):
+        total+=x[i]**2
+    return total
 
-particleArray = np.array()
+initial=[5,5]               # initial starting location [x1,x2...]
+bounds=[(-10,10),(-10,10)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...]
+swarmSize = 10
+iterations = 50
 
-for x in numberOfParticles:
-    newParticle = particle(x)
-    np.append(particleArray, newParticle)
+# call PSO with hyperparams
+PSO(func, initial, bounds, swarmSize, iterations)
