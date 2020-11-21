@@ -68,8 +68,9 @@ def func(x):
 
 initial=[5,5]               # initial starting location [x1,x2...]
 bounds=[(-10,10),(-10,10)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...]
-swarmSize = 10
-iterations = 50
+swarmSize = 50
+iterations = 100
+numberOfInformants = 10
 
 # call PSO with hyperparams
-PSO(func, initial, bounds, swarmSize, iterations)
+PSO(func, initial, bounds, swarmSize, iterations, numberOfInformants)
