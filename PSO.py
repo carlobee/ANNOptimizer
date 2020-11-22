@@ -15,10 +15,16 @@ class PSO():
     # construct
     def __init__(self, func, initial, bounds, swarmSize, iterations, numberOfInformants):
         
+        global num_dimentions
+        num_dimensions=len(initial)
+        GLOBAL_fitnessBest = -1
+        GLOBAL_positionBest = []
+        
+        
         #-------- Generate the swarm ---------#
         
         swarmArray = []     # create array to hold swarm particles
-
+        
         # create x amount of particles and add to array
         for x in range(0, swarmSize):
             swarmArray.append(particle(x, initial, swarmSize, numberOfInformants))
@@ -31,25 +37,25 @@ class PSO():
         #-------- Get methods for the particle informant info ---------#
         
         def get_informant_id(id):
-            
+             
             best_informant_fitness = -1
             best_informant_id = -1
-            
+             
             for x in range(0, numberOfInformants):
                 check_id = swarmArray[id].informantGroup[x]
-                
-                
+                 
+                 
                 #best_position = []
-                
+                 
                 if swarmArray[check_id].bestFitness < best_informant_fitness or best_informant_fitness == -1:
                     best_informant_fitness = swarmArray[check_id].bestFitness
                     best_informant_id = check_id
-            
+             
             return check_id
-        
+         
         def get_informant_best_fitness(id):
             return swarmArray[id].bestFitness
-        
+         
         def get_informant_best_position(id):
             return swarmArray[id].bestPosition
         
@@ -76,8 +82,13 @@ class PSO():
                 if swarmArray[x].currentFitness < informant_best_fitness or informant_best_fitness == -1:
                     informant_best_fitness = swarmArray[x].currentFitness
                  
+                # check if this particle us the best in global group
+                if swarmArray[x].currentFitness < GLOBAL_fitnessBest or GLOBAL_fitnessBest == -1:
+                    GLOBAL_fitnessBest = swarmArray[x].currentFitness
+                    GLOBAL_positionBest = swarmArray[x].currentPosition
+                 
             for x in range(0, swarmSize):
-                swarmArray[x].changeVelocity(informant_best_position)
+                swarmArray[x].changeVelocity(informant_best_position, GLOBAL_positionBest)
                 swarmArray[x].changePosition(bounds)
             
             i+=1

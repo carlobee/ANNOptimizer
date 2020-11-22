@@ -37,19 +37,22 @@ class particle:
             self.bestPosition = self.currentPosition
      
     # change the velocity of the particle
-    def changeVelocity(self, informant_best_position):
+    def changeVelocity(self, informant_best_position, global_best_position):
         weight = 0.5
         cog_constant = 1
-        soc_constant = 2
+        soc_constant = 1
+        inf_constant = 1
         
         random1 = random.random()
         random2 = random.random()
+        random3 = random.random()
         
         for x in range(0,2):
             # adapted from https://nathanrooy.github.io/posts/2016-08-17/simple-particle-swarm-optimization-with-python/
-            velocityCog = cog_constant*random1*(informant_best_position[x]-self.currentPosition[x])
-            velocitySoc = soc_constant*random2*(informant_best_position[x]-self.currentPosition[x])
-            self.velocity[x] = weight*self.velocity[x]+velocityCog+velocitySoc
+            velocityCog = cog_constant*random1*(global_best_position[x]-self.currentPosition[x])
+            velocitySoc = soc_constant*random2*(global_best_position[x]-self.currentPosition[x])
+            velocityInformant = inf_constant*random3*(informant_best_position[x]-self.currentPosition[x])
+            self.velocity[x] = weight*self.velocity[x]+velocityCog+velocitySoc+velocityInformant
             
     # change to the new position after the velocities have been applied to the particles
     def changePosition(self, bounds):
