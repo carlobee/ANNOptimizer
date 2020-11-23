@@ -16,7 +16,8 @@ from PSO import PSO
 from particle import particle
 
 import matplotlib.pyplot as plt
-import math
+import math # used for graph plotting of functions only
+from tabulate import tabulate
 
 
 #--- INPUT DATA --------------------------------------------------------------------------
@@ -32,8 +33,8 @@ output_neurons = 1
 
 #--- PARTICLE SWARM OPTIMIZATION HYPERPARAMS ---------------------------------------------
     
-swarmSize = 50
-iterations = 400
+swarmSize = 100
+iterations = 100
 numberOfInformants = 10
 dimensions = (input_neurons * hidden_neurons) + hidden_neurons + (hidden_neurons * output_neurons) + output_neurons
 cog_constant = 0.5
@@ -41,7 +42,7 @@ soc_constant = 0.3
 
 # ranges
 bounds=[(-10,10),(-10,10)]
-weight_range = (0.0, 1.0)
+weight_range = (-1.0, 1.0)
 learning_rate_range = (0.0, 1.0)
 inertia_range = (0.9, 0.9)
 
@@ -97,7 +98,7 @@ def feed_forward_train(input_values_x, target_val, weights):
         
         # forward pass calculations
         layer1_output = np.dot(input_values_x, layer1_weights) + layer1_bias
-        AF_output = np.tanh(layer1_output)
+        AF_output = hyperbolicTangent(layer1_output)
         layer2_output = np.dot(AF_output, layer2_weights) + layer2_bias
         final = layer2_output
         
@@ -119,7 +120,7 @@ def final_prediction(input_values_x, settings):
         
     # forward pass calculations
     layer1_output = np.dot(input_values_x, layer1_weights) + layer1_bias
-    AF_output = np.tanh(layer1_output)
+    AF_output = hyperbolicTangent(layer1_output)
     layer2_output = np.dot(AF_output, layer2_weights) + layer2_bias
     final = layer2_output
     
@@ -178,63 +179,60 @@ print(oArray)
 #--- GRAPHS -----------------------------------------------------------------------------
 
 # tanh
-def plot_tanh(predicted_values):
+def plot_tanh(predicted_values, true_values):
     #tanh points
     x=[]
     y = []
-    i=-10
-    while (i<=10):
-        x.append(i)
-        y.append(math.tanh(i))
-        i=i+0.1
-        
-    pred_x = []
-    pred_y = []
+    # loop through our predicted values to plot against x    
+    x_prediction = []
+    y_prediction = []
     j=-1
     q=0
     while (j<=1):
-        pred_x.append(j)
-        pred_y.append(predicted_values[q])
+        x_prediction.append(j)
+        y_prediction.append(predicted_values[q])
+        x.append(j)
+        y.append(true_values[q])
         j=j+(2/101)
         q=q+1
     
-    plt.plot(x,y)
-    plt.plot(pred_x, pred_y)
+    
     
     plt.axvline(x=0.00,linewidth=2, color='#f1f1f1')
     plt.axhline(y=0.00,linewidth=2, color='#f1f1f1')
     plt.grid(linestyle='-',
         linewidth=0.5,color='#f1f1f1')
+    plt.plot(x,y)
+    plt.plot(x_prediction, y_prediction)
     plt.show()
 
 # x cubed
-def plot_cubic(predicted_values):
+def plot_cubic(predicted_values, true_values):
     #cubic points
     x=[]
     y = []
-    i=-1
-    while (i<=1):
-        x.append(i)
-        y.append(np.power(i,3))
-        i=i+0.1
-    
-    pred_x = []
-    pred_y = []
+    # loop through our predicted values to plot against x    
+    x_prediction = []
+    y_prediction = []
     j=-1
     q=0
     while (j<=1):
-        pred_x.append(j)
-        pred_y.append(predicted_values[q])
+        x_prediction.append(j)
+        y_prediction.append(predicted_values[q])
+        x.append(j)
+        y.append(true_values[q])
         j=j+(2/101)
         q=q+1
-        
-    plt.plot(x, y)
-    plt.plot(pred_x, pred_y)
+    
+    
     
     plt.axvline(x=0.00,linewidth=2, color='#f1f1f1')
     plt.axhline(y=0.00,linewidth=2, color='#f1f1f1')
     plt.grid(linestyle='-',
         linewidth=0.5,color='#f1f1f1')
+    
+    plt.plot(x,y)
+    plt.plot(x_prediction, y_prediction)
     plt.show()
 
 #--- RUN MAIN ---------------------------------------------------------------------------- 
@@ -259,11 +257,35 @@ if __name__ == '__main__':
     # compare predicted value to actual value using MSE
     ACCURACY = MSE(input_values_y, predicted_values)
     
-    print("\nPREDICTED VALUES: " + str(predicted_values))
-    #print("\nACTUAL VALUES: " + str(input_values_y))
-    print("\nACCURACY: " + str(ACCURACY))
+    print("\nPREDICTED VALUES:" + str(predicted_values))
+    print("\n------------------------------")
+    print("Overview")
+    print("------------------------------")
+    print("\nFunction Approximation:\n")
+    table = [["Function","tanh"]]
+    print(tabulate(table))
+    print("\nNeural Net Settings:\n")
+    table = [["Hidden layers",1],["Input neurons",input_neurons],["Hidden layer neurons",hidden_neurons],["Output neurons",output_neurons]]
+    print(tabulate(table))
+
+    print("\nPSO Hyperparameters:\n")
+    table2 = [["Particles",swarmSize],["Iterations",iterations],["Activation function","tanh"]]
+    print(tabulate(table2))
+    print("\n------------------------------")
+    print("Results")
+    print("------------------------------")
+    print("\nMSE Accuracy: " + str(ACCURACY))
+    print("\nANN Optimal Settings: " + str(swarm.GLOBAL_positionBest))
     
-    plot_cubic(predicted_values)
+    '''
+    Additional print notes:
+    
+    - Type activation function used in table2
+    - Type function approximation
+    
+    '''
+    # plot a graph of predicted values and true values
+    plot_cubic(predicted_values, input_values_y)
     
 
 
