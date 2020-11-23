@@ -1,15 +1,16 @@
 """
-A program that implements a the Particle Swarm Optimization Algorithm
+PSO.py
+
+Contains main implementation of PSO algorithm. Generates swarm and calls particle.py
 
 Written By Carl Bettosi and Mamta Sofat
-17/11/2020
+23/11/2020
 
 """
 import numpy as np
 import random
 
 from particle import particle
-
 
 class PSO():
     
@@ -36,10 +37,7 @@ class PSO():
         for x in range(0, self.swarmSize):
             self.swarmArray.append(particle(dimensions, weight_range, learning_rate_range)) #removed x, swarmSize, numofinfo
         
-        
-        
         print(f"\nParticles with swarm size {swarmSize} generated.\n")
-
     
     #--- INFORMANT FUNCTIONS ----------------------------------------------------------------------------
     
@@ -83,7 +81,7 @@ class PSO():
             # for each particle in swarm, calculate fitness and update object's attributes to reflect
             for x in range(0, self.swarmSize):
                 currentFitness = func(input_values_x, input_values_y, self.swarmArray[x])
-                
+
                 # evaluate if current fitness is better than recorded best, if so then update
                 if currentFitness < self.swarmArray[x].bestFitness:
                     self.swarmArray[x].bestFitness = currentFitness
@@ -105,13 +103,20 @@ class PSO():
                     self.GLOBAL_fitnessBest = currentFitness
                     self.GLOBAL_positionBest = self.swarmArray[x].currentPosition
             
-            
             for x in self.swarmArray:
-                
-                weight = np.random.uniform(self.weight_range[0], self.weight_range[1], 1)[0]
-                
+            
                 rand1 = random.random()
                 rand2 = random.random()
+                
+                '''
+                Title: Train Neural Network (Numpy)— Particle Swarm Optimization(PSO)
+                Author: Zeeshan Ahmad
+                Title of program/source code: Update position and velocity of particles in PSO (adapted)
+                Type: Source code snippet
+                Availability: https://medium.com/@zeeshanahmad10809/train-neural-network-numpy-particle-swarm-optimization-pso-93f289fc8a8e
+                Licence: https://github.com/zeeshanahmad10809/neural-net-pso/blob/master/LICENSE
+                '''
+                weight = np.random.uniform(self.weight_range[0], self.weight_range[1], 1)[0]
                 
                 # update velocity 
                 x.velocity = weight * x.velocity + (self.cog_constant * rand1) * \
@@ -122,22 +127,8 @@ class PSO():
                 x.currentPosition = x.currentPosition + x.velocity
 
             print("Current best: " + str(self.GLOBAL_fitnessBest))
-            ##for x in range(0, self.swarmSize):
-             ##   self.swarmArray[x].changeVelocity(self.GLOBAL_positionBest) #informant_best_position taken out
-             ##   self.swarmArray[x].changePosition(bounds)
-            
+
             i+=1
-            
-        #-------- Search through swarm to get best ---------#
-        '''
-        final_best_fitness = -1
-        final_best_position = []
-        
-        for x in self.swarmArray:
-            if x.bestFitness < final_best_fitness or final_best_fitness == -1:
-                final_best_fitness = x.bestFitness
-                final_best_position = x.bestPosition
-        '''
         
         # print final results
         print ('Results:')
